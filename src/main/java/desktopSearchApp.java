@@ -50,6 +50,7 @@ Thread.sleep(1000);
             } else {
                 System.out.println("Files containing '" + query + "':");
                 System.out.println(results.get().size());
+
 //                for (File file : results) {
 //                    System.out.println(" - " + file.getAbsolutePath());
 //                }
