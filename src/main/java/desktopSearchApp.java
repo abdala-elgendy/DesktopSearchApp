@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class desktopSearchApp {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
        fileQueue fileQueue = new fileQueue();
         Index index = new Index();
         fileIndexer fileIndexer = new fileIndexer(fileQueue, index);
@@ -17,7 +17,7 @@ public class desktopSearchApp {
         fileIndexer.startIndexing();
 
         // Directory to index (replace with your path)
-        String directoryPath = "path/to/your/directory";
+        String directoryPath = "F:\\selectedFolder";
 
         try {
             Files.walk(Paths.get(directoryPath)).filter(Files::isRegularFile).forEach(filePath -> {
@@ -31,6 +31,7 @@ public class desktopSearchApp {
             e.printStackTrace();
         }
 
+Thread.sleep(1000);
         // Allow user to search
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter a word to search for (type 'exit' to quit):");
