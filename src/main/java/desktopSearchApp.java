@@ -5,9 +5,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class desktopSearchApp {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
        fileQueue fileQueue = new fileQueue();
         Index index = new Index();
         fileIndexer fileIndexer = new fileIndexer(fileQueue, index);
@@ -42,14 +44,15 @@ Thread.sleep(1000);
                 break;
             }
 
-            List<File> results = searcher.search(query);
-            if (results.isEmpty()) {
+            Future<List<File>> results = searcher.searchAsync(query);
+            if (results.get().isEmpty()) {
                 System.out.println("No results found for: " + query);
             } else {
                 System.out.println("Files containing '" + query + "':");
-                for (File file : results) {
-                    System.out.println(" - " + file.getAbsolutePath());
-                }
+                System.out.println(results.get().size());
+//                for (File file : results) {
+//                    System.out.println(" - " + file.getAbsolutePath());
+//                }
             }
         }
 
