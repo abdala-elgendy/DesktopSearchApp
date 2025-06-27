@@ -1,47 +1,73 @@
 # DesktopSearchApp
 
-This project is inspired by the book **"Java Concurrency in Practice"** and serves as a practical implementation of the concepts discussed within, with a primary focus on the **Producer-Consumer Pattern**.
-
-## Overview
-
-**DesktopSearchApp** is a desktop application designed to search files and their contents on your computer efficiently. The core logic leverages advanced concurrency techniques, especially the Producer-Consumer pattern, to maximize performance, responsiveness, and scalability, as taught in "Java Concurrency in Practice".
-
-## Concurrency Pattern Used
-
-- **Producer-Consumer Pattern:**  
-  The application is structured around the producer-consumer pattern. Producer threads are responsible for discovering files to be searched, while consumer threads perform the search operations on those files. This separation allows for efficient parallel processing and optimal utilization of system resources.
+DesktopSearchApp is a simple, multithreaded Java application designed to index and search for words within files located in a specified directory on your computer. The application builds an in-memory word-to-file index, allowing users to quickly search for all files containing a given word.
 
 ## Features
 
-- Fast file and content searching using concurrent programming
-- Responsive UI that remains usable even during intensive searches
-- Modular and extensible codebase
-- Designed as a learning project for Java concurrency patterns, especially producer-consumer
+- **Directory Indexing**: Recursively scans a chosen directory and indexes all regular files.
+- **In-Memory Word Index**: Maps every word found in the files to the files in which they appear.
+- **Asynchronous Search**: Searches are performed asynchronously for responsiveness.
+- **Multithreaded Indexing and Searching**: Uses Java's `ExecutorService` to allow concurrent indexing and searching.
+- **Simple CLI**: Users can search for words interactively in the console.
+
+## How It Works
+
+1. **Indexing**: The application traverses the specified directory, adding every regular file to a thread-safe queue. The `fileIndexer` pulls files from the queue, reads their contents, and splits text into words. Each word is mapped to the file in an index.
+2. **Searching**: Users enter search queries in the console. The `searcher` class looks up the word in the index and returns a list of files containing that word.
 
 
-## How to Run
+### Running the Application
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/abdala-elgendy/DesktopSearchApp.git
-   ```
-2. Build the project using your preferred Java IDE or with Maven/Gradle (if applicable).
-3. Run the main application class:
-   ```bash
-   java -jar target/DesktopSearchApp.jar
-   ```
-   *(Adjust the command according to your build setup.)*
+1. **Clone or download this repository.**
+2. **Edit the directory path** in `desktopSearchApp.java`:
+    ```java
+    String directoryPath = "F:\\selectedFolder";
+    ```
+    Replace this with the absolute path to the directory you want to index.
 
-## Learning Goals
+3. **Compile the Java files**:
+    ```bash
+    javac *.java
+    ```
 
-- Apply concepts from "Java Concurrency in Practice" in a real-world project
-- Gain hands-on experience with the producer-consumer pattern, thread safety, task execution, and synchronization
-- Understand challenges and solutions related to concurrent desktop applications
+4. **Run the application**:
+    ```bash
+    java desktopSearchApp
+    ```
+
+5. **Use the CLI**:
+    - Enter any word to search for files containing that word.
+    - Type `exit` to quit the application.
+
+## Key Classes
+
+- `Index`: Maintains a mapping from words (case-insensitive) to a list of files in which they appear.
+- `fileQueue`: Thread-safe queue for files to be indexed.
+- `fileIndexer`: Consumes files from the queue, reads their contents, and updates the index.
+- `searcher`: Provides asynchronous search over the index using a thread pool.
+- `desktopSearchApp`: Main class; sets up indexing, handles user search queries, and manages application lifecycle.
+
+## Example
+
+```
+Enter a word to search for (type 'exit' to quit):
+java
+Files containing 'java':
+3
+```
+
+## Notes
+
+- The search and indexing are case-insensitive.
+- Only regular files are indexed (not directories).
+- Word splitting uses non-word characters as delimiters (`\\W+`).
+- The index is built in memory; searching large directories with very large files may require substantial RAM.
+
+## Customization
+
+- **Thread Pool Size**: Adjust the number of threads in `fileIndexer` and `searcher` to optimize for your hardware.
+- **File Types**: Add filtering logic in `Files.walk()` if you only want to index specific file types.
 
 ## License
-MIT License.
 
-## Acknowledgments
-
-- **Brian Goetz et al.** for authoring "Java Concurrency in Practice"
-- The Java community for resources and support
+This project is provided as-is for educational purposes.
